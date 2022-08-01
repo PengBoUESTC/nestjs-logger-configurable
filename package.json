@@ -1,6 +1,6 @@
 {
   "name": "nestjs-logger-configurable",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "nestjs logger based on configservice and winston",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -22,6 +22,11 @@
     "pre-commit": "lint-staged"
   },
   "author": "pengboUESTC",
+  "homepage": "https://github.com/PengBoUESTC/nestjs-logger-configurable.git",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/PengBoUESTC/nestjs-logger-configurable.git"
+  },
   "license": "ISC",
   "devDependencies": {
     "@nestjs/config": "^2.0.1",
