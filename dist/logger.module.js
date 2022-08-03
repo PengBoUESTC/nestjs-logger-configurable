@@ -14,7 +14,7 @@ const constants_1 = require("./constants");
 let LoggerModule = LoggerModule_1 = class LoggerModule {
     static register(options) {
         // TODO-PB checkInterval 配置应该放在哪里？？
-        const { isGlobal, reqLogKey, infoLogKey, checkInterval = 60000, } = options || {};
+        const { isGlobal, reqLogKey, infoLogKey, logConfigKey = 'LogConfig', checkInterval = 60000, } = options || {};
         const providers = [
             logger_service_1.LoggerService,
             {
@@ -28,6 +28,10 @@ let LoggerModule = LoggerModule_1 = class LoggerModule {
             {
                 provide: constants_1.CHECK_PATH_INTERVAL_TOKEN,
                 useValue: checkInterval,
+            },
+            {
+                provide: constants_1.LOG_CONFIG_KEY,
+                useValue: logConfigKey,
             },
         ];
         return {

@@ -20,8 +20,9 @@ export declare class LoggerService {
     private readonly reqLogKey;
     private readonly infoLogKey;
     private readonly checkInterval;
+    private readonly logConfigKey;
     readonly logger: Container;
-    constructor(configService: ConfigService, reqLogKey: string, infoLogKey: string, checkInterval: number);
+    constructor(configService: ConfigService, reqLogKey: string, infoLogKey: string, checkInterval: number, logConfigKey: string);
     private initLogger;
     private pathCheck;
     private getFormate;

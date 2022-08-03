@@ -12,6 +12,7 @@ import { formatLogReq, formatLogInfo } from './formatLog';
 import {
   REQ_LOG_TOKEN,
   INFO_LOG_TOKEN,
+  LOG_CONFIG_KEY,
   CHECK_PATH_INTERVAL_TOKEN,
 } from './constants';
 
@@ -42,13 +43,15 @@ export class LoggerService {
     private readonly infoLogKey: string,
     @Inject(CHECK_PATH_INTERVAL_TOKEN)
     private readonly checkInterval: number,
+    @Inject(LOG_CONFIG_KEY)
+    private readonly logConfigKey: string,
   ) {
     this.logger = this.initLogger();
   }
 
   private initLogger(): Container {
     const container = new Container();
-    const logConfig: LogConfig = this.configService.get('LogConfig') || [];
+    const logConfig: LogConfig = this.configService.get(this.logConfigKey) || [];
 
     logConfig.forEach((config: Config) => {
       const { key, level = 'info', path } = config || {};

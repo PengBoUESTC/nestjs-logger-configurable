@@ -22,16 +22,17 @@ const formatLog_1 = require("./formatLog");
 const constants_1 = require("./constants");
 const { combine, label, json } = winston_1.format;
 let LoggerService = class LoggerService {
-    constructor(configService, reqLogKey, infoLogKey, checkInterval) {
+    constructor(configService, reqLogKey, infoLogKey, checkInterval, logConfigKey) {
         this.configService = configService;
         this.reqLogKey = reqLogKey;
         this.infoLogKey = infoLogKey;
         this.checkInterval = checkInterval;
+        this.logConfigKey = logConfigKey;
         this.logger = this.initLogger();
     }
     initLogger() {
         const container = new winston_1.Container();
-        const logConfig = this.configService.get('LogConfig') || [];
+        const logConfig = this.configService.get(this.logConfigKey) || [];
         logConfig.forEach((config) => {
             const { key, level = 'info', path } = config || {};
             if ((0, lodash_1.isEmpty)(path))
@@ -133,6 +134,7 @@ LoggerService = __decorate([
     __param(1, (0, common_1.Inject)(constants_1.REQ_LOG_TOKEN)),
     __param(2, (0, common_1.Inject)(constants_1.INFO_LOG_TOKEN)),
     __param(3, (0, common_1.Inject)(constants_1.CHECK_PATH_INTERVAL_TOKEN)),
-    __metadata("design:paramtypes", [config_1.ConfigService, String, String, Number])
+    __param(4, (0, common_1.Inject)(constants_1.LOG_CONFIG_KEY)),
+    __metadata("design:paramtypes", [config_1.ConfigService, String, String, Number, String])
 ], LoggerService);
 exports.LoggerService = LoggerService;

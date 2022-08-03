@@ -4,12 +4,14 @@ import { LoggerService } from './logger.service';
 import {
   REQ_LOG_TOKEN,
   INFO_LOG_TOKEN,
+  LOG_CONFIG_KEY,
   CHECK_PATH_INTERVAL_TOKEN,
 } from './constants';
 export interface LoggerOptions {
   isGlobal?: boolean;
   reqLogKey: string;
   infoLogKey: string;
+  logConfigKey?: string;
   checkInterval?: number;
 }
 
@@ -24,6 +26,7 @@ export class LoggerModule {
       isGlobal,
       reqLogKey,
       infoLogKey,
+      logConfigKey = 'LogConfig',
       checkInterval = 60000,
     } = options || {};
     const providers = [
@@ -39,6 +42,10 @@ export class LoggerModule {
       {
         provide: CHECK_PATH_INTERVAL_TOKEN,
         useValue: checkInterval,
+      },
+      {
+        provide: LOG_CONFIG_KEY,
+        useValue: logConfigKey,
       },
     ];
     return {
