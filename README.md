@@ -1,48 +1,60 @@
 ## nestjs 接入日志模块
 
-- 基于 ```winston``` 库实现
+- 基于 `winston` 库实现
 
 ## 使用
 
-- ```LoggerModule``` 通过静态方法```register```返回一个动态模块```DynamicModule```。
+- `LoggerModule` 通过静态方法`register`返回一个动态模块`DynamicModule`。
 
-- ```register```可接受的配置有
+- `register`可接受的配置有
 
-  1. ```isGlobal```: 模块是否是全局注册,
-  2. ```reqLogKey```: ```reqLog```方法应该获取的日志打印配置,
-  3. ```infoLogKey```: ```infoLog```方法应该获取的日志打印配置,
-  4. ```checkInterval```: 日志打印路径检查周期,
+  1. `isGlobal`: 模块是否是全局注册,
+  2. `reqLogKey`: `reqLog`方法应该获取的日志打印配置,
+  3. `infoLogKey`: `infoLog`方法应该获取的日志打印配置,
+  4. `checkInterval`: 日志打印路径检查周期,
 
-- 为了实现 ```logger``` 打印的配置化，```loggerService```内部依赖 ```ConfigService``` 模块。因此 ```ConfigModule```要获取日志打印的的配置信息（logger配置的key为：```LogConfig```）。
+- 为了实现 `logger` 打印的配置化，`loggerService`内部依赖 `ConfigService` 模块。因此 `ConfigModule`要获取日志打印的的配置信息（logger配置的key为：`LogConfig`）。
   ```javascript
-  const logConfig: LogConfig = this.configService.get('LogConfig') || [];
+  const logConfig: Config[] = this.configService.get('LogConfig') || [];
   ```
 
-- ```logger```模块可支持的配置信息如下
+- `logger`模块可支持的配置信息如下
 ```javascript
-LogConfig: [
-  {
-    key: 'test_biz_log', // 用于获取当前配置下的 日志打印模版
-    level: 'debug', // debug 类型不会打印多余的日志信息 日志打印级别 与 winston 一致
-    jsonOptions: {}, // json 化配置
-    labelOptions: {
-      label: 'info_log', // 日志打印标签文案
-    },
-    // 日志打印路径
-    path: {
-      log: 'info', // 是否在控制台打印日志，以及日志打印级别
-      dirname: '/export/Logs/xx/', // 写日志文件路径 日志打印模块会循环检查该路径是否存在，不存在会尝试创建
-      filename: 'development.biz.log', // 写日志文件名 不存在会自动创建
-    },
-  },
-]
+export interface Config {
+  level: 'alert' | 'error' | 'warning' | 'info'; // 日志打印级别 与 winston 一致
+  key: string;  // 用于获取当前配置下的 日志打印模版
+  labelOptions?: LabelOptions;  // 日志打印标签文案 
+  jsonOptions?: JsonOptions; // json 化配置
+  path: {
+    filename: string; // 写日志文件路径 日志打印模块会循环检查该路径是否存在，不存在会尝试创建
+    log?: string; // 是否在控制台打印日志，以及日志打印级别
+    dirname?: string; // 写日志文件名 不存在会自动创建
+  };
+}
 ```
 
 ```javascript
+// app.module.ts
 import { LoggerModule } from 'nestjs-logger-configurable';
 
 @Module({
   imports: [
+    ConfigModule.forRoot({
+      cache: true,
+      isGlobal: true,
+      load: [() => ({
+        LogConfig: [
+          {
+            key: 'req_log',
+            level: 'info',
+            path: {
+              dirname: process.env.LOG_DIR,
+              filename: `${process.env.APP_NAME}.req.log`,
+            },
+          }
+        ] // Config[]
+      })],
+    }),
     LoggerModule.register({
       isGlobal: true,
       reqLogKey: 'req_log',
@@ -50,8 +62,10 @@ import { LoggerModule } from 'nestjs-logger-configurable';
     })
   ]
 })
-
-// 写日志
+export class AppModule {}
+```
+```javascript
+// LoggerTest.service.ts
 import { LoggerService } from 'nestjs-logger-configurable';
 
 @Inejctable()

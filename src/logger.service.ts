@@ -18,6 +18,8 @@ import {
 
 const { combine, label, json } = format;
 
+// TODO-PB 装饰器
+// 日志打印 快捷方法
 export interface Config {
   level: 'alert' | 'error' | 'warning' | 'info';
   key: string;
